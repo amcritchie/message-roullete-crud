@@ -18,6 +18,30 @@ class App < Sinatra::Application
     erb :home, locals: {messages: messages}
   end
 
+  get "/messages/:id" do
+    message = @database_connection.find(params[:id])
+    erb :"messages/show", locals: {message: message}
+  end
+
+  get "/edit/:id" do
+    message = @database_connection.sql("SELECT * FROM messages WHERE id = #{params[:id]}").first
+    erb :edit, locals: {message:message}
+  end
+
+  patch "/edit/:id" do
+    message = params[:message]
+    if message == ""
+      flash[:error] = "Must contain content"
+      redirect "/edit/#{params[:id]}"
+    elsif message.length <= 140
+      @database_connection.sql("UPDATE messages SET message = '#{message}' WHERE id = #{params[:id]}")
+    else
+      flash[:error] = "Message must be less than 140 characters."
+      redirect "/edit/#{params[:id]}"
+    end
+    redirect "/"
+  end
+
   post "/messages" do
     message = params[:message]
     if message.length <= 140

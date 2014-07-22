@@ -6,7 +6,6 @@
 
 <% messages.each do |message| %>
 
-  <li><%= message["message"] %></li>
-
+  <li><a href="/messages/:id"><%= message["message"]%></a> | <a href="/edit/<%= message["id"] %>">Edit</a></li>
 <% end %>
 

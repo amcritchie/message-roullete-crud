@@ -14,8 +14,9 @@ class App < Sinatra::Application
 
   get "/" do
     messages = @database_connection.sql("SELECT * FROM messages")
+    comments = @database_connection.sql("SELECT * FROM comments")
 
-    erb :home, locals: {messages: messages}
+    erb :home, locals: {messages: messages, comments: comments}
   end
 
   get "/messages/:id" do
@@ -26,6 +27,11 @@ class App < Sinatra::Application
   get "/edit/:id" do
     message = @database_connection.sql("SELECT * FROM messages WHERE id = #{params[:id]}").first
     erb :edit, locals: {message:message}
+  end
+
+  get "/comment/:id" do
+    message = @database_connection.sql("SELECT * FROM messages WHERE id = #{params[:id]}").first
+    erb :comment, locals: {message:message}
   end
 
   patch "/edit/:id" do
@@ -39,6 +45,20 @@ class App < Sinatra::Application
       flash[:error] = "Message must be less than 140 characters."
       redirect "/edit/#{params[:id]}"
     end
+    redirect "/"
+  end
+
+  delete "/delete/:id" do
+    @database_connection.sql("DELETE FROM messages WHERE id = #{params[:id]}")
+
+    flash[:error] = "Message deleted"
+
+    redirect "/"
+  end
+
+  post "/comment/:id" do
+    comment = params[:comment]
+    @database_connection.sql("INSERT INTO comments (comment, message_id) VALUES ('#{comment}', #{params[:id]})")
     redirect "/"
   end
 

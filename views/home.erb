@@ -6,6 +6,21 @@
 
 <% messages.each do |message| %>
 
-  <li><a href="/messages/:id"><%= message["message"]%></a> | <a href="/edit/<%= message["id"] %>">Edit</a></li>
+  <li>
+    <a><%= message["message"]%></a> |
+    <a href="/edit/<%= message["id"] %>">Edit</a>  |
+    <a href="/comment/<%= message["id"] %>">Comment</a>  |
+    <form method="post" action="/delete/<%= message["id"] %>">
+      <input type="hidden" name="_method" value="delete"/>
+      <input type="submit" value="Delete"/>
+    </form>
+    <ul>
+      <% comments.each do |comment| %>
+        <% if comment["message_id"] == message["id"] %>
+            <li><%= comment["comment"] %></li>
+        <% end %>
+      <% end %>
+    </ul>
+  </li>
 <% end %>
 

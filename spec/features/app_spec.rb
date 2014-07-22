@@ -24,7 +24,7 @@ feature "Messages" do
     expect(page).to have_content("Message must be less than 140 characters.")
   end
 end
-feature "Edit"do
+feature "Edit, delete, and comment on messages."do
   before(:each) do
     visit "/"
 
@@ -33,7 +33,7 @@ feature "Edit"do
     click_button "Submit"
   end
 
-  scenario "Edit and delete messages." do
+  scenario "Edit link" do
     click_link "Edit"
     expect(page).to have_content("Hello Everyone!")
   end
@@ -55,7 +55,17 @@ feature "Edit"do
     expect(page).to have_content("Message must be less than 140 characters.")
   end
   scenario "Delete message" do
-    click_link "Delete"
+    click_button "Delete"
     expect(page).to have_no_content("Hello Everyone!")
   end
+  scenario "Add comment." do
+    click_link "Comment"
+    fill_in "comment", :with => "Goodbye Everyone."
+
+    click_button "Add Comment"
+
+    expect(page).to have_content("Goodbye Everyone.")
+  end
 end
+
+

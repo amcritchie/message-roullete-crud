@@ -24,6 +24,13 @@ class App < Sinatra::Application
     erb :"messages/show", locals: {message: message}
   end
 
+  get "/message_comments/:id" do
+    message = @database_connection.sql("SELECT * FROM messages WHERE id = #{params[:id]}").first
+    comments = @database_connection.sql("SELECT * FROM comments")
+
+    erb :message_comments, locals: {message: message, comments: comments}
+  end
+
   get "/edit/:id" do
     message = @database_connection.sql("SELECT * FROM messages WHERE id = #{params[:id]}").first
     erb :edit, locals: {message:message}
@@ -50,9 +57,7 @@ class App < Sinatra::Application
 
   delete "/delete/:id" do
     @database_connection.sql("DELETE FROM messages WHERE id = #{params[:id]}")
-
     flash[:error] = "Message deleted"
-
     redirect "/"
   end
 

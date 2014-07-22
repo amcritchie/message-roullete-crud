@@ -67,5 +67,21 @@ feature "Edit, delete, and comment on messages."do
     expect(page).to have_content("Goodbye Everyone.")
   end
 end
+feature "Clicking on a message." do
+
+  before(:each) do
+    visit "/"
+    fill_in "Message", :with => "Hello Everyone!"
+    click_button "Submit"
+    click_link "Comment"
+    fill_in "comment", :with => "Goodbye Everyone."
+    click_button "Add Comment"
+  end
+
+  scenario "Click on message" do
+    click_link "Hello Everyone!"
+    expect(page).to have_content("Goodbye Everyone.")
+  end
+end
 
 
